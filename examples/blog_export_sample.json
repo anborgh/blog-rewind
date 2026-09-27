@@ -1,0 +1,99 @@
+{
+  "name": "Личный блог",
+  "type": "private_channel",
+  "id": 1234567890,
+  "messages": [
+    {
+      "id": 1,
+      "type": "message",
+      "date": "2023-09-02T09:40:00",
+      "date_unixtime": "1693636800",
+      "from": "Личный блог",
+      "from_id": "channel1234567890",
+      "text": "Первый день на новой работе. Кофе в автомате отвратительный, люди хорошие."
+    },
+    {
+      "id": 2,
+      "type": "message",
+      "date": "2023-09-02T22:15:00",
+      "date_unixtime": "1693682100",
+      "from": "Личный блог",
+      "from_id": "channel1234567890",
+      "text": "Дочитал «Пикник на обочине». Не отпускает."
+    },
+    {
+      "id": 3,
+      "type": "message",
+      "date": "2024-09-02T12:05:00",
+      "date_unixtime": "1725267900",
+      "from": "Личный блог",
+      "from_id": "channel1234567890",
+      "text": "Сегодня наконец собрал полку. Три часа, два лишних винта, полка стоит."
+    },
+    {
+      "id": 4,
+      "type": "message",
+      "date": "2024-09-02T19:30:00",
+      "date_unixtime": "1725294600",
+      "from": "Личный блог",
+      "from_id": "channel1234567890",
+      "text": "Прогулка по старому городу",
+      "photo": "photos/photo_4.jpg"
+    },
+    {
+      "id": 5,
+      "type": "message",
+      "date": "2024-09-02T19:30:00",
+      "date_unixtime": "1725294600",
+      "from": "Личный блог",
+      "from_id": "channel1234567890",
+      "text": "",
+      "photo": "photos/photo_5.jpg"
+    },
+    {
+      "id": 6,
+      "type": "message",
+      "date": "2025-09-02T08:20:00",
+      "date_unixtime": "1756790400",
+      "from": "Личный блог",
+      "from_id": "channel1234567890",
+      "text": "Утренний забег вдоль набережной. Впервые за год пробежал десятку."
+    },
+    {
+      "id": 7,
+      "type": "message",
+      "date": "2025-09-02T21:00:00",
+      "date_unixtime": "1756836000",
+      "from": "Личный блог",
+      "from_id": "channel1234567890",
+      "text": "",
+      "file": "video_files/sunset.mp4",
+      "media_type": "video_file"
+    },
+    {
+      "id": 8,
+      "type": "message",
+      "date": "2025-09-03T11:00:00",
+      "date_unixtime": "1756886400",
+      "from": "Личный блог",
+      "from_id": "channel1234567890",
+      "text": "Запись за соседний день — сегодня её быть не должно."
+    },
+    {
+      "id": 9,
+      "type": "message",
+      "date": "2022-09-02T15:45:00",
+      "date_unixtime": "1662122700",
+      "from": "Личный блог",
+      "from_id": "channel1234567890",
+      "text": "Переехал. Коробки везде, интернет обещают завтра."
+    },
+    {
+      "id": 10,
+      "type": "service",
+      "date": "2021-01-01T00:00:00",
+      "date_unixtime": "1609448400",
+      "action": "pin_message"
+    }
+  ]
+}

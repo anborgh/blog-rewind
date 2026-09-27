@@ -1,0 +1,39 @@
+[Unit]
+Description=memorybot — напоминания о записях блога прошлых лет
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=memorybot
+Group=memorybot
+WorkingDirectory=/opt/memorybot
+ExecStart=/opt/memorybot/.venv/bin/memorybot run
+Restart=always
+RestartSec=10
+# Ошибка в настройках (нет токена, неизвестный часовой пояс) — это не повод
+# перезапускаться по кругу: сервис останавливается, причина остаётся в журнале.
+RestartPreventExitStatus=2
+
+# Единственное место, куда сервису нужно писать, — файл архива.
+ProtectSystem=strict
+ReadWritePaths=/opt/memorybot/data
+ProtectHome=yes
+PrivateTmp=yes
+
+NoNewPrivileges=yes
+CapabilityBoundingSet=
+AmbientCapabilities=
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+RestrictNamespaces=yes
+RestrictSUIDSGID=yes
+LockPersonality=yes
+MemoryDenyWriteExecute=yes
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectControlGroups=yes
+SystemCallFilter=@system-service
+SystemCallErrorNumber=EPERM
+
+[Install]
+WantedBy=multi-user.target
