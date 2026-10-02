@@ -266,9 +266,8 @@ async def test_today_forwards_a_memory(app, storage):
 
     await dispatcher.feed_update(bot, private_message("/today"))
 
-    assert "SendMessage" in session.names
+    assert session.names == ["ForwardMessage"]
     assert isinstance(session.requests[-1], ForwardMessage | ForwardMessages)
-    assert "Ровно 2 года назад" in session.texts[0]
 
 
 async def test_today_on_a_quiet_day_says_so_only_when_asked(app):
