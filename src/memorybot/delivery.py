@@ -9,7 +9,7 @@ from aiogram.enums import ParseMode
 from aiogram.exceptions import TelegramAPIError
 
 from .models import Memory
-from .texts import memory_fallback, memory_header
+from .texts import memory_fallback
 
 log = logging.getLogger(__name__)
 
@@ -17,12 +17,11 @@ log = logging.getLogger(__name__)
 async def send_memory(bot: Bot, chat_id: int, memory: Memory) -> str:
     """Отправляет воспоминание и возвращает использованный способ доставки.
 
-    Сначала пробуем переслать оригинал — так сохраняется подпись канала и дата.
+    Без собственных комментариев бота: только сам пост. Сначала пробуем переслать
+    оригинал — так сохраняется подпись канала и дата.
     Если пост недоступен (например, поднят из экспорта, а бота в канале нет),
     отправляем копию, а в крайнем случае — текст со ссылкой.
     """
-    await bot.send_message(chat_id, memory_header(memory), parse_mode=ParseMode.HTML)
-
     for strategy, action in (("forward", _forward), ("copy", _copy)):
         try:
             await action(bot, chat_id, memory)

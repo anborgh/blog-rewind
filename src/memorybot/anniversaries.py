@@ -74,6 +74,21 @@ def choose_memory(memories: Sequence[Memory], rng: random.Random | None = None) 
     return rng.choice(pool)
 
 
+def choose_per_year(
+    memories: Sequence[Memory], rng: random.Random | None = None
+) -> list[Memory]:
+    """Дайджест дня: по одному случайному воспоминанию из каждого года.
+
+    Порядок — от самого свежего года к самому далёкому (год назад, два, три…).
+    """
+    rng = rng or random.Random()
+    by_year: dict[int, list[Memory]] = {}
+    for memory in memories:
+        by_year.setdefault(memory.years_ago, []).append(memory)
+    digest = [choose_memory(by_year[years], rng) for years in sorted(by_year)]
+    return [memory for memory in digest if memory is not None]
+
+
 def memories_for(
     posts: Sequence[Post],
     today: date,
