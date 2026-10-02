@@ -47,7 +47,7 @@ def test_settings_have_workable_defaults():
     settings = load_settings({"BOT_TOKEN": "123:abc"})
 
     assert settings.timezone_name == "Europe/Moscow"
-    assert str(settings.window) == "10:00-20:00"
+    assert str(settings.window) == "12:00"
     assert settings.min_years_ago == 1
     assert settings.owner_id is None
 

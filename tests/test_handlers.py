@@ -311,7 +311,7 @@ async def test_bad_window_is_reported_without_changing_settings(app):
 
     await dispatcher.feed_update(bot, private_message("/window завтра утром"))
 
-    assert str(service.window) == "10:00-20:00"
+    assert str(service.window) == "12:00"
     assert "время" in session.texts[-1]
 
 

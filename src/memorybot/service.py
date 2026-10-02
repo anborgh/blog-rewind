@@ -12,7 +12,7 @@ from zoneinfo import ZoneInfo
 
 from aiogram import Bot
 
-from .anniversaries import anniversary_day_keys, build_memories, choose_memory
+from .anniversaries import anniversary_day_keys, build_memories, choose_memory, choose_per_year
 from .config import Settings, TimeWindow, parse_timezone, parse_window
 from .delivery import send_memory
 from .models import Memory, Post
@@ -32,13 +32,15 @@ STATE_LAST_CHECK = "last_check"
 
 @dataclass
 class DeliveryOutcome:
-    memory: Memory | None
+    """Итог отправки дайджеста: что отправлено (по одному воспоминанию на год) и как."""
+
+    memories: list[Memory]
     candidates: list[Memory]
-    strategy: str | None = None
+    strategies: list[str]
 
     @property
     def delivered(self) -> bool:
-        return self.memory is not None and self.strategy is not None
+        return bool(self.memories)
 
 
 class MemoryService:
@@ -155,6 +157,9 @@ class MemoryService:
     def pick(self, memories: list[Memory]) -> Memory | None:
         return choose_memory(memories, self._rng)
 
+    def digest(self, memories: list[Memory]) -> list[Memory]:
+        return choose_per_year(memories, self._rng)
+
     def random_post(self) -> Post | None:
         return self.storage.random_post(self.blog_chat_id)
 
@@ -181,37 +186,45 @@ class MemoryService:
         force: bool = False,
         record: bool = True,
     ) -> DeliveryOutcome:
-        """Находит и отправляет воспоминание. Молчит, если в этот день ничего не было."""
+        """Присылает дайджест: по одному случайному посту из каждого прошлого года.
+
+        Молчит, если в этот день ни в одном из прошлых лет ничего не было.
+        """
         owner = self.owner_id
         if owner is None:
             log.warning("Владелец неизвестен: пропускаю доставку")
-            return DeliveryOutcome(None, [])
+            return DeliveryOutcome([], [], [])
         if self.paused and not force:
-            return DeliveryOutcome(None, [])
+            return DeliveryOutcome([], [], [])
 
         target = day or self.today()
         if record and not force and await run(self.checked_on, target):
             log.info("За %s уже проверяли, пропускаю", target)
-            return DeliveryOutcome(None, [])
+            return DeliveryOutcome([], [], [])
 
-        memories = await run(self.collect, target)
-        memory = self.pick(memories)
-        if memory is None:
+        candidates = await run(self.collect, target)
+        digest = self.digest(candidates)
+        if not digest:
             log.info("За %s в прошлые годы записей нет", target)
             if record and not force:
                 await run(self.mark_checked, target)
-            return DeliveryOutcome(None, memories)
+            return DeliveryOutcome([], candidates, [])
 
-        strategy = await send_memory(self.bot, owner, memory)
-        if record:
-            await run(self.storage.record_delivery, target, memory.head.chat_id, memory.message_ids)
-        # Ручной /today не отменяет ежедневное напоминание: день помечает только планировщик.
+        strategies: list[str] = []
+        for memory in digest:
+            strategy = await send_memory(self.bot, owner, memory)
+            strategies.append(strategy)
+            if record:
+                await run(
+                    self.storage.record_delivery, target, memory.head.chat_id, memory.message_ids
+                )
+            log.info(
+                "Отправлено воспоминание за %s (%s, способ %s)",
+                memory.head.local_date,
+                years_ago_phrase(memory.years_ago),
+                strategy,
+            )
+        # Ручной /today не отменяет ежедневный дайджест: день помечает только планировщик.
         if record and not force:
             await run(self.mark_checked, target)
-        log.info(
-            "Отправлено воспоминание за %s (%s, способ %s)",
-            memory.head.local_date,
-            years_ago_phrase(memory.years_ago),
-            strategy,
-        )
-        return DeliveryOutcome(memory, memories, strategy)
+        return DeliveryOutcome(digest, candidates, strategies)

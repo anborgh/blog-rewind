@@ -11,7 +11,7 @@ from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 from dotenv import find_dotenv, load_dotenv
 
 DEFAULT_TIMEZONE = "Europe/Moscow"
-DEFAULT_WINDOW = "10:00-20:00"
+DEFAULT_WINDOW = "12:00"
 DEFAULT_DB_PATH = "data/memorybot.sqlite3"
 
 
