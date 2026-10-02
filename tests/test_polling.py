@@ -176,7 +176,8 @@ async def test_channel_post_gets_indexed_and_comes_back_a_year_later(
     telegram.push(private_message("/today"))
     await telegram.wait_for("forwardMessage")
 
-    assert "Ровно 1 год назад" in telegram.texts()[-1]
+    # Дайджест без комментариев бота: после /stats новых текстовых сообщений нет.
+    assert "Записей: 1" in telegram.texts()[-1]
     forwarded = next(payload for method, payload in telegram.calls if method == "forwardMessage")
     assert json.loads(forwarded["from_chat_id"]) == BLOG
     assert json.loads(forwarded["message_id"]) == 11
